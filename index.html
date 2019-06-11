@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Document</title>
+<style>
+[v-cloak]{
+  display: none;
+}
+img{
+  vertical-align: top;
+}
+.wrap{
+  display: flex;
+  flex-wrap:wrap;
+  width: 400px;
+  margin-bottom: 40px;
+}
+.wrap .img{
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+.wrap .img img{
+  top: 0;
+  left: 0;
+}
+.imgFade-enter-active, .imgFade-leave-active {
+  transition: opacity .5s;
+}
+.imgFade-enter, .imgFade-leave-to{
+  opacity: 0;
+  position: absolute;
+}
+.imgRotate-enter-active, .imgRotate-leave-active {
+  transition: .3s linear;
+}
+.imgRotate-enter, .imgRotate-leave-to{
+  transform:rotateY(90deg);
+  position: absolute;
+}
+</style>
+</head>
+<body>
+
+<div id="app" v-cloak>
+  <div class="wrap">
+    <div v-for="(image,index) in active" class="img" v-bind:class="'img'+index">
+      <transition name="imgFade" mode="out-in">
+        <img v-bind:src="image" alt="" v-bind:key="image" width="100">
+      </transition>
+    </div>
+  </div><!-- /.wrap -->
+
+  <div class="wrap">
+    <div v-for="(image,index) in active" class="img" v-bind:class="'img'+index">
+      <transition name="imgRotate" mode="out-in">
+        <img v-bind:src="image" alt="" v-bind:key="image" width="100">
+      </transition>
+    </div>
+  </div><!-- /.wrap -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+<script>
+var app = new Vue({
+	el:'#app',
+  data:{
+  	images:[
+      'images/tmb01.png',
+      'images/tmb02.png',
+      'images/tmb03.png',
+      'images/tmb04.png',
+      'images/tmb05.png',
+      'images/tmb06.png',
+      'images/tmb07.png',
+      'images/tmb08.png',
+      'images/tmb09.png',
+      'images/tmb10.png',
+      'images/tmb11.png',
+      'images/tmb12.png',
+      'images/tmb13.png',
+      'images/tmb14.png',
+      'images/tmb15.png',
+      'images/tmb16.png',
+      'images/tmb17.png',
+      'images/tmb18.png',
+      'images/tmb19.png',
+      'images/tmb20.png',
+      'images/tmb21.png',
+      'images/tmb22.png',
+      'images/tmb23.png',
+      'images/tmb24.png',
+      'images/tmb25.png',
+      'images/tmb26.png',
+      'images/tmb27.png',
+      'images/tmb28.png',
+      'images/tmb29.png',
+      'images/tmb30.png',
+    ],
+    activeNum:8,
+    active:[],
+    inactive:[],
+    activeChoice:{
+      old:0,
+      new:0
+    },
+    inactiveChoice:0,
+    temp:''
+  },
+  created:function(){
+  	this.shuffle()
+    this.imgChoice()
+  },
+  mounted:function(){
+    let self = this;
+    setInterval(function(){
+      self.changeImg()
+    },1500)
+  },
+  methods:{
+  	shuffle:function(){
+    	this.images = _.shuffle(this.images)
+    },
+    imgChoice:function(){
+    	for(var i=0;i<this.images.length;i++){
+      	if(i<this.activeNum){
+        	this.active[i] = this.images[i]
+        }else{
+        	this.inactive[i-this.activeNum] = this.images[i]
+        }
+      }
+    },
+    changeImg:function(){
+      let self = this;
+      self.activeChoice.old = self.activeChoice.new
+      while(self.activeChoice.old === self.activeChoice.new){
+        self.activeChoice.new = Math.floor(Math.random() * self.active.length)
+      }
+      self.inactiveChoice = Math.floor(Math.random() * self.inactive.length)
+      self.temp = self.active[self.activeChoice.new]
+      self.active.splice(self.activeChoice.new, 1, self.inactive[self.inactiveChoice]);
+      self.inactive.splice(self.inactiveChoice, 1, self.temp);
+    }
+  }
+})
+</script>
+</body>
+</html>
